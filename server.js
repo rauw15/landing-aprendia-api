@@ -208,11 +208,36 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Endpoint de raíz
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'API de AprendIA Chiapas funcionando correctamente',
+        version: '1.0.0',
+        endpoints: {
+            health: '/api/health',
+            register: '/api/register',
+            users: '/api/users',
+            stats: '/api/stats'
+        },
+        documentation: 'https://github.com/tu-repo/aprendia-chiapas',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Manejo de rutas no encontradas
 app.use('*', (req, res) => {
     res.status(404).json({
         success: false,
-        message: 'Endpoint no encontrado'
+        message: 'Endpoint no encontrado',
+        availableEndpoints: [
+            'GET /',
+            'GET /api/health',
+            'POST /api/register',
+            'GET /api/users',
+            'GET /api/stats'
+        ],
+        requestedPath: req.originalUrl
     });
 });
 
