@@ -13,6 +13,24 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware de logging
+app.use((req, res, next) => {
+    console.log(`📝 ${req.method} ${req.path} - ${new Date().toISOString()}`);
+    next();
+});
+
+// Endpoint de salud (debe ir al principio)
+app.get('/api/health', (req, res) => {
+    console.log('🏥 Health check solicitado');
+    res.json({
+        success: true,
+        message: 'API de AprendIA Chiapas funcionando correctamente',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0',
+        database: mongoose.connection.readyState === 1 ? 'Conectado' : 'Desconectado'
+    });
+});
+
 // Conectar a MongoDB Atlas
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://223265:223265@cluster0.jkdr27b.mongodb.net/?appName=Cluster0';
 
@@ -197,16 +215,6 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
-// Endpoint de salud
-app.get('/api/health', (req, res) => {
-    res.json({
-        success: true,
-        message: 'API de AprendIA Chiapas funcionando correctamente',
-        timestamp: new Date().toISOString(),
-        version: '1.0.0',
-        database: mongoose.connection.readyState === 1 ? 'Conectado' : 'Desconectado'
-    });
-});
 
 // Endpoint de raíz
 app.get('/', (req, res) => {
